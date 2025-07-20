@@ -1,0 +1,14 @@
+services:
+  app-python:
+    build:
+      dockerfile: Dockerfile.app-python
+    networks:
+      - default
+
+  llm-ollama:
+    build:
+      dockerfile: Dockerfile.llm-ollama
+    networks:
+      - default
+    volumes:
+      - ./ollama_data:/root/.ollama

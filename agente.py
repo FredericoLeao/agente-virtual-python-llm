@@ -2,9 +2,22 @@ import json
 import requests
 import asyncio
 
+MCP_SERVER = "127.0.0.1"
+LLM_OLLAMA_SERVER = "llm-ollama"
+
+def formatar_output_agente(res: list):
+    output = f"\n{len(res)} carros encontrados!"
+    for veiculo in res:
+        v = veiculo
+        output += (
+            f"- {v['marca']} {v['modelo']} {v['ano']} | "
+            f"{v['cor']}, {v['km']} km, {v['transmissao']} "
+            f"({v['portas']} portas) | {v['combustivel']} | "
+            f"R${v['preco']:.2f}")
+    return output
 
 async def consultar_servidor_mcp(filtros: str):
-    reader, writer = await asyncio.open_connection("127.0.0.1", 5555)
+    reader, writer = await asyncio.open_connection(MCP_SERVER, 5555)
     writer.write((str(filtros) + "\n").encode())
     await writer.drain()
 
@@ -18,7 +31,7 @@ async def consultar_servidor_mcp(filtros: str):
 
 def consultar_llm_local(prompt: str, model: str = "mistral") -> str:
     response = requests.post(
-        "http://localhost:11434/api/generate",
+        f"http://{LLM_OLLAMA_SERVER}:11434/api/generate",
         json={
             "model": model,
             "prompt": prompt,
@@ -74,13 +87,16 @@ async def executar_agente():
     while u_input.lower() != 'sair':
         print("\nMe diga que tipo de carro está procurando\n")
         u_input = input("\n> ")
-        filtros = extrair_filtros(u_input)
         print("\nOk, procurando...\n")
+        filtros = extrair_filtros(u_input)
         # consultar servidor mcp
         res = json.loads(await consultar_servidor_mcp(filtros))
         # receber resultado e exibir para o usuário
+        if not res or len(res) == 0:
+            print("\nNenhum carro encontrado, tente ser mais específico")
+            continue
 
-        print(res)
+        print(formatar_output_agente(res))
 
 if __name__ == "__main__":
     asyncio.run(executar_agente())
