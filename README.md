@@ -17,3 +17,6 @@
 
 - Executar agente
 ```./exec_agente.sh```
+
+- Executar teste automatizado
+```./run_tests.sh```
