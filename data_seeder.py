@@ -27,7 +27,7 @@ CORES = ["preto", "branco", "prata", "vermelho", "azul", "cinza"]
 
 DADOS_VEICULOS = []
 
-for _ in range(200):
+for _ in range(300):
     v = Veiculo(
         marca=random.choice(list(MARCAS_MODELOS.keys())),
         modelo=random.choice(random.choice(list(MARCAS_MODELOS.values()))),
@@ -36,7 +36,7 @@ for _ in range(200):
         combustivel=random.choice(COMBUSTIVEIS),
         cor=random.choice(CORES),
         ano=random.randint(2004, 2024),
-        km=random.randint(10000, 120000),
+        km=random.randint(10000, 160000),
         portas = random.choice([2, 4]),
         transmissao = random.choice(["manual", "automática"]),
     )

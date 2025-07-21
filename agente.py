@@ -10,7 +10,7 @@ def formatar_output_agente(res: list):
     for veiculo in res:
         v = veiculo
         output += (
-            f"- {v['marca']} {v['modelo']} {v['ano']} | "
+            f"\n- {v['marca']} {v['modelo']} {v['ano']} ({v['tipo']} | "
             f"{v['cor']}, {v['km']} km, {v['transmissao']} "
             f"({v['portas']} portas) | {v['combustivel']} | "
             f"R${v['preco']:.2f}")
@@ -61,7 +61,7 @@ Campos válidos (todos opcionais):
 Retorne **apenas** o JSON
 
 Exemplo de entrada:
-"Quero um SUV da Jeep, diesel, de 2020 pra cima, até 100 mil reais, com até 60 mil km, transmissao automatica"
+"Quero um SUV da Jeep, azul, diesel, de 2020 pra cima, até 100 mil reais, com até 60 mil km, transmissao automatica"
 
 Exemplo de saída:
 {{
@@ -71,6 +71,7 @@ Exemplo de saída:
   "ano_min": 2020,
   "preco_max": 100000,
   "km_max": 60000,
+  "cor": "azul",
   "transmissao": "automatica"
 }}
 
@@ -85,7 +86,7 @@ async def executar_agente():
     print("\nOlá, posso te ajudar na sua busca por um carro")
     u_input = ''
     while u_input.lower() != 'sair':
-        print("\nMe diga que tipo de carro está procurando\n")
+        print("\nMe diga que tipo de carro deseja procurar\n")
         u_input = input("\n> ")
         print("\nOk, procurando...\n")
         filtros = extrair_filtros(u_input)
@@ -93,7 +94,7 @@ async def executar_agente():
         res = json.loads(await consultar_servidor_mcp(filtros))
         # receber resultado e exibir para o usuário
         if not res or len(res) == 0:
-            print("\nNenhum carro encontrado, tente ser mais específico")
+            print("\nNenhum carro encontrado, tente novamente")
             continue
 
         print(formatar_output_agente(res))
